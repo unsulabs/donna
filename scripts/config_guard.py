@@ -11,8 +11,8 @@ Silent when healthy (empty stdout → no cron delivery noise).
 Prints a short report when drift is fixed or verification fails.
 
 Examples:
-  DONNA_EXPECT_MODEL_PROVIDER=xai-oauth \\
-  DONNA_EXPECT_MODEL_DEFAULT=grok-composer-2.5-fast \\
+  DONNA_EXPECT_MODEL_PROVIDER=<your-provider> \\
+  DONNA_EXPECT_MODEL_DEFAULT=<your-model> \\
   python3 scripts/config_guard.py --profile donna
 
   python3 scripts/config_guard.py --profile donna \\
