@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "type": "file",
+      "path": "Home.md",
+      "title": "Home"
+    },
+    {
+      "type": "file",
+      "path": "MOC.md",
+      "title": "MOC"
+    },
+    {
+      "type": "file",
+      "path": "Inbox.md",
+      "title": "Inbox"
+    }
+  ]
+}

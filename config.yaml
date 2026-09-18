@@ -1,0 +1,130 @@
+# Donna profile — clean distribution defaults.
+# No model/provider pins and no credentials. Set your model with:
+#   hermes --profile donna model
+# or: hermes --profile donna setup
+#
+# Onboarding (`donna-setup` skill) applies the rest of the live stack:
+# Mnemosyne, vault path, timezone, TTS voice, daily briefing, optional gateways.
+
+agent:
+  max_turns: 60
+  api_max_retries: 3
+  tool_use_enforcement: auto
+  task_completion_guidance: true
+  parallel_tool_call_guidance: true
+  environment_probe: true
+  coding_context: auto
+  reasoning_effort: high
+
+compression:
+  enabled: true
+  threshold: 0.85
+  target_ratio: 0.70
+  protect_last_n: 50
+  protect_first_n: 3
+  abort_on_summary_failure: false
+
+display:
+  compact: true
+  personality: helpful
+  show_reasoning: false
+  streaming: true
+  timestamps: false
+  persistent_output: true
+  persist_prompts: true
+  file_mutation_verifier: true
+  skin: donna
+  tool_progress: new
+
+privacy:
+  redact_pii: true
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  write_approval: true
+  memory_char_limit: 1100
+  user_char_limit: 700
+  # Provider is activated during onboarding once Mnemosyne is installed.
+  # Leave unset here so install does not claim a provider that is not present yet.
+  # onboarding sets: provider: mnemosyne, auto_sleep: false
+  auto_sleep: false
+
+skills:
+  template_vars: true
+  inline_shell: false
+  guard_agent_created: true
+  write_approval: true
+
+approvals:
+  mode: manual
+  timeout: 60
+  cron_mode: deny
+
+command_allowlist:
+  - script execution via heredoc
+  - script execution via -e/-c flag
+
+security:
+  allow_private_urls: false
+  redact_secrets: true
+  website_blocklist:
+    enabled: false
+    domains: []
+
+kanban:
+  dispatch_in_gateway: false
+
+logging:
+  level: INFO
+  max_size_mb: 5
+  backup_count: 3
+  memory_monitor:
+    enabled: true
+
+onboarding:
+  profile_build: ask
+
+# Broad CLI surface by default (same posture as a fully configured Donna).
+# First-run orientation peels back what the user does not want.
+platform_toolsets:
+  cli:
+    - browser
+    - clarify
+    - code_execution
+    - computer_use
+    - cronjob
+    - delegation
+    - file
+    - image_gen
+    - kanban
+    - memory
+    - session_search
+    - skills
+    - terminal
+    - todo
+    - tts
+    - video
+    - video_gen
+    - vision
+    - web
+  telegram:
+    - hermes-telegram
+
+platforms:
+  api_server:
+    enabled: false
+  telegram:
+    enabled: false
+  bluebubbles:
+    enabled: false
+
+# Edge TTS needs no API key. Onboarding may change the voice.
+tts:
+  edge:
+    voice: en-US-JennyNeural
+
+plugins:
+  enabled: []
+  disabled: []
+  entries: {}

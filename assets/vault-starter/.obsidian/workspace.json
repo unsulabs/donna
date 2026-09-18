@@ -1,0 +1,20 @@
+{
+  "main": {
+    "id": "main",
+    "type": "split",
+    "children": [
+      {
+        "id": "leaf",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Home.md",
+            "mode": "source"
+          }
+        }
+      }
+    ]
+  },
+  "active": "leaf"
+}
