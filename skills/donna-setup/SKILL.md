@@ -32,9 +32,11 @@ Turn a freshly installed **Donna** profile into the same operating stack as the 
 
 | Layer | Target state |
 |---|---|
-| Persona | `SOUL.md` / `AGENTS.md` already shipped |
+| Persona | `SOUL.md` / `AGENTS.md` already shipped (EA + orchestrator rails) |
 | Memory | **Mnemosyne**, profile-scoped DB, `auto_sleep: false`, host LLM enabled |
 | Notes | Dedicated **Obsidian** vault, **PARA + Daily + Inbox**, templates, `.obsidian` config |
+| Team | Optional **`.team`** roster from `.team.example` + `donna-team-orchestration` skill |
+| Kanban | Optional board **`donna-ops`** for durable multi-bot work |
 | Rhythm | Optional **Daily Briefing** cron (user picks time/timezone) |
 | Voice | **Edge TTS** (no key), voice chosen with user |
 | Messaging | Optional Telegram (user supplies bot token via `.env`, never chat) |
@@ -97,13 +99,20 @@ Recommend **Mnemosyne** (local, profile-scoped). Confirm install path with curre
 - Want it? Time + timezone + sections (tasks/weather/agenda if calendar later)
 - Delivery: omit `deliver` for origin chat unless they specify otherwise
 
-### 6. Optional integrations
+### 6. Team / orchestration (recommended if they have other Hermes profiles)
+- Install/copy `.team.example` → `$HERMES_HOME/.team` and edit member profile ids to match **their** machines
+- Create kanban board `donna-ops` if missing (`hermes kanban boards create donna-ops` or current equivalent)
+- Confirm `skills/donna-team-orchestration` is present
+- Do **not** invent specialist profiles; only list ones that exist and the user approves
+
+### 7. Optional integrations
 - Telegram bot? → user edits `.env` themselves
 - Google Workspace (Gmail/Calendar/Drive)? → run `google-workspace` setup; browser OAuth gate
 - Config guardian cron (restore model keys if desktop login overwrites)? only if they set expected provider/model
+- Optional board notify cron (`scripts/kanban_board_notify.py`, env `DONNA_KANBAN_BOARD_DB`) — only if they want Telegram/board pings for CLI-created cards
 
-### 7. Toolsets
-CLI toolsets ship enabled. Walk plain-language list and peel back only what they decline (same table as `hermes-starter-onboarding`).
+### 8. Toolsets
+CLI toolsets ship enabled (includes **kanban**). Walk plain-language list and peel back only what they decline (same table as `hermes-starter-onboarding`).
 
 ## Phase 2 — Plan
 
@@ -113,9 +122,10 @@ Identity: <user> / <assistant> / <style>
 Timezone: <iana> · Weather city: <or none>
 Memory: Mnemosyne @ <profile>/mnemosyne/data · auto_sleep false · host LLM on
 Vault: scaffold PARA at <abs path> · OBSIDIAN_VAULT_PATH
+Team: .team from example · members: <list or donna-only> · board donna-ops: <yes/no>
 TTS: edge / <voice>
 Briefing: <schedule or none>
-Optional: Telegram / Google / config guard
+Optional: Telegram / Google / config guard / kanban board notify
 Toolsets off: <list or none>
 I will not write secrets or connect accounts until you approve.
 ```
@@ -219,6 +229,15 @@ cronjob(
 
 Ensure `DONNA_EXPECT_MODEL_PROVIDER` / `DONNA_EXPECT_MODEL_DEFAULT` are in the profile environment or pass `--expect` via a thin wrapper script the user owns. **Do not** hardcode upstream author models into the shipped guard defaults.
 
+### J. Team roster + kanban board
+If approved in Phase 1:
+
+1. Copy distribution `.team.example` → `$HERMES_HOME/.team` (do not overwrite a customized live `.team` without asking).
+2. Replace placeholder member `profile:` ids with profiles that actually exist under `~/.hermes/profiles/`.
+3. Ensure skill `donna-team-orchestration` is on the profile (ships with this distribution).
+4. Create board `donna-ops` if missing (current Hermes CLI: `hermes kanban boards …` — follow live help).
+5. Optional notify watchdog: set `DONNA_KANBAN_BOARD_DB` to the board sqlite path; schedule `kanban_board_notify.py` with `no_agent=True` and deliver to the user's preferred channel.
+
 ## Phase 4 — Verify checklist
 
 - [ ] `hermes memory status` → mnemosyne active/available
@@ -227,6 +246,8 @@ Ensure `DONNA_EXPECT_MODEL_PROVIDER` / `DONNA_EXPECT_MODEL_DEFAULT` are in the p
 - [ ] Timezone readback matches request
 - [ ] TTS voice set
 - [ ] Briefing job listed with correct schedule (if requested)
+- [ ] `.team` present when multi-bot was requested; only real profile ids
+- [ ] `donna-ops` board exists when requested
 - [ ] No secrets in SOUL/AGENTS/skills/cron prompts
 - [ ] USER.md / MEMORY.md contain no API keys
 

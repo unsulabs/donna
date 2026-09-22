@@ -1,11 +1,12 @@
 name: donna
-version: 1.0.0
+version: 1.1.0
 description: >
-  Executive-assistant Hermes profile (Donna): perceptive, discreet, outcome-focused.
-  Ships persona + operating doctrine, full-stack guided onboarding (Mnemosyne memory,
-  PARA Obsidian vault, daily briefing, TTS, optional Google/Telegram), and a clean
-  vault starter. No credentials, model pins, or personal data — runs on the recipient's
-  own Hermes model/provider.
+  Executive-assistant Hermes profile (Donna): perceptive EA and multi-bot
+  orchestrator. Ships persona + intake/handoff doctrine, .team roster template,
+  full-stack guided onboarding (Mnemosyne memory, PARA Obsidian vault, optional
+  donna-ops kanban, daily briefing, TTS, optional Google/Telegram), and a clean
+  vault starter. No credentials, model pins, or personal data — runs on the
+  recipient's own Hermes model/provider.
 hermes_requires: ">=0.14.0"
 author: Unsu Labs
 license: MIT
@@ -29,6 +30,12 @@ env_vars:
   - name: TELEGRAM_ALLOWED_USERS
     description: Comma-separated Telegram user IDs allowed to talk to the bot
     required: false
+  - name: DONNA_KANBAN_BOARD_DB
+    description: Absolute path to donna-ops (or chosen board) kanban.db for optional board notify script
+    required: false
+  - name: DONNA_KANBAN_BOARD
+    description: Kanban board slug for notify script (default donna-ops)
+    required: false
 distribution_owned:
   - SOUL.md
   - AGENTS.md
@@ -37,6 +44,7 @@ distribution_owned:
   - LICENSE
   - distribution.yaml
   - profile.yaml
+  - .team.example
   - skills/
   - scripts/
   - assets/

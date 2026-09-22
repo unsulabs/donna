@@ -4,7 +4,8 @@
 # or: hermes --profile donna setup
 #
 # Onboarding (`donna-setup` skill) applies the rest of the live stack:
-# Mnemosyne, vault path, timezone, TTS voice, daily briefing, optional gateways.
+# Mnemosyne, vault path, timezone, TTS voice, daily briefing, optional gateways,
+# optional .team roster + donna-ops kanban board.
 
 agent:
   max_turns: 60
@@ -72,6 +73,10 @@ security:
     enabled: false
     domains: []
 
+# Machine-wide dispatcher usually lives on the default profile gateway.
+# Keep false here so Donna does not host a second dispatcher by accident.
+# Set kanban.orchestrator_profile on the *dispatcher host* config when triage
+# fan-out should hand root cards to Donna (see Hermes kanban multi-gateway docs).
 kanban:
   dispatch_in_gateway: false
 
@@ -110,6 +115,7 @@ platform_toolsets:
     - web
   telegram:
     - hermes-telegram
+    - kanban
 
 platforms:
   api_server:
@@ -124,6 +130,8 @@ tts:
   edge:
     voice: en-US-JennyNeural
 
+# Optional Tool Router stays available but not forced on. Enable only if you
+# install/configure hermes-token-router yourself.
 plugins:
   enabled: []
   disabled: []

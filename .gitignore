@@ -47,6 +47,10 @@ mnemosyne/
 plugins/mnemosyne/
 memories/MEMORY.md.local
 memories/USER.md.local
+.team
+!.team.example
+scripts/.kanban-board-notify.cursor
+scripts/.kanban-board-notify.cursor.tmp
 
 # OS / editor
 .DS_Store

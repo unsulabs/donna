@@ -1,0 +1,205 @@
+# Donna team roster — EXAMPLE / TEMPLATE
+# Copy to: ~/.hermes/profiles/<donna-profile>/.team  (same directory as SOUL.md)
+# Purpose: who Donna may orchestrate, what they do, how to call them.
+# Not a Hermes core file: Donna must load this at intake / before any handoff.
+# Replace placeholder specialists with YOUR real Hermes profiles. Remove unused members.
+# Do not put secrets, chat IDs, tokens, or absolute private home paths in the committed example;
+# fill those only in the live .team on the machine.
+
+version: 1
+owner: "<your-name>"
+orchestrator: donna
+language: en
+updated: "YYYY-MM-DD"
+
+## Operating model (contract)
+
+# Donna is the executive assistant / program manager — not the specialist.
+# 1) INTAKE FIRST: dump → inventory of tasks (what / owner / status / horizon / blocker).
+# 2) Long-running projects are normal: weeks–months, no fixed end date, beta while refining.
+#    Never invent artificial due dates. Track horizon (month / quarter / continuous).
+# 3) On execute: read this file → read assignee doctrine (SOUL/AGENTS/skills)
+#    → package a brief in THEIR language → dispatch → follow up.
+# 4) Production of content/code/design is done by the assignee (or human), not by Donna
+#    unless the user explicitly asks Donna to do the craft herself.
+# 5) Rejecting Donna's framing must NEVER delete the task inventory.
+# 6) "What's pending?" reads inventory (vault + kanban + this roster), never improvises.
+
+model_of_work:
+  intake: "tasks_with_owners"
+  default_role: "EA_orchestrator"
+  craft_default: "specialists"
+  project_shape: "long_running_beta"
+  fixed_deadlines: false
+
+## How to call bots / profiles (Hermes fundamentals)
+
+# A "bot" in Hermes IS a profile (~/.hermes/profiles/<name>/).
+# Three official collaboration surfaces (use the right one):
+
+channels:
+  bot_mode:
+    what: "Desktop Bot Mode roster + message_agent + Bot Chat"
+    when: "Quick handoff, Q&A between bots, Desktop group rooms"
+    how:
+      - "Desktop: @mention the bot or open its Bot Chat"
+      - "From a Bot Chat session: message_agent(target='<profile>', message='…')"
+      - "CLI twin: hermes -p <bot> chat --in ~ -c 'Bot Chat' -q '…'"
+    requires:
+      - "profile.yaml ui_meta.hermes-bots on install (Bot Mode managed)"
+      - "Each bot has title/description so teammates know who does what"
+    notes:
+      - "message_agent is fire-and-forget; reply arrives as later notification"
+      - "Only canonical Bot Chat sessions inject the teammate protocol"
+      - "Regular messaging DM with Donna is NOT Bot Chat — prefer kanban from those channels"
+
+  kanban:
+    what: "Durable multi-profile work queue (~/.hermes/kanban.db + boards)"
+    when: "Real work that must survive restarts, reviews, retries, multi-week projects"
+    how:
+      - "hermes kanban boards create|list|switch"
+      - "hermes kanban create '<title>' --assignee <profile> --body '…' [--tenant …] [--parent …]"
+      - "Donna (with kanban toolset): kanban_create / kanban_list / kanban_show / kanban_comment / …"
+      - "Dispatcher spawns the assignee profile as a full worker process"
+    board_default: "donna-ops"
+    dispatcher_owner: "Usually the machine 'default' profile gateway. One dispatcher machine-wide; it enumerates every board. Keep donna profile kanban.dispatch_in_gateway=false unless you intentionally host dispatch here."
+    dispatcher_config: "kanban.orchestrator_profile should live on the dispatcher host config when triage fan-out must hand roots to Donna — verify current Hermes kanban multi-gateway docs."
+    docs: "https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban"
+    notes:
+      - "Kanban ≠ delegate_task. Kanban = durable queue; delegate_task = short in-process RPC"
+      - "Long projects: one hermes project + optional bound board; many cards over months"
+      - "Statuses: triage|todo|ready|running|blocked|review|done|archived"
+      - "Per-card notify: cards created from a chat can auto-subscribe; CLI/cron creates may need hermes kanban notify-subscribe …"
+      - "Optional board-wide watchdog: scripts/kanban_board_notify.py (env-configured) on a no_agent cron"
+
+  profile_cli:
+    what: "One-shot or interactive run of a specialist profile"
+    when: "Ad-hoc work without board ceremony, or debugging a bot"
+    how:
+      - "hermes -p <specialist> chat -q '…'"
+      - "Interactive: hermes -p <name>"
+
+  vault_inventory:
+    what: "Human-readable program board in Obsidian"
+    path: "${OBSIDIAN_VAULT_PATH}"
+    when: "Source of truth for project list, owners, horizons, blockers the user can open"
+    layout: "PARA Projects/ for multi-month streams; task lines with owner + status + horizon"
+
+## Members
+
+members:
+
+  - id: donna
+    profile: donna
+    handle: "@donna"
+    role: "Executive assistant / orchestrator / program manager"
+    status: active
+    home: "~/.hermes/profiles/donna"
+    does:
+      - "Intake and task inventory (what, owner, status, horizon, blocker)"
+      - "Prioritize and answer what's pending"
+      - "Read specialist doctrine before handoff; write briefs they can execute"
+      - "Create/assign kanban cards; follow runs; surface blockers to the user"
+      - "Calendar/email/notes ops when connected; daily briefing"
+      - "Hold multi-month project continuity (no day-sprint bias)"
+    does_not:
+      - "Default content production, engineering implementation, or design craft"
+      - "Delete inventory when a plan/framing is rejected"
+      - "Invent fixed deadlines for beta/long projects"
+    tools_emphasis:
+      - "kanban (orchestrator)"
+      - "file/obsidian vault"
+      - "google-workspace (optional)"
+      - "cronjob"
+      - "delegation (short RPC only — not for multi-day specialist work)"
+      - "message_agent (only inside Bot Chat)"
+    doctrine_paths:
+      - "~/.hermes/profiles/donna/AGENTS.md"
+      - "~/.hermes/profiles/donna/SOUL.md"
+      - "~/.hermes/profiles/donna/.team"
+
+  # --- Example specialists (edit names to match YOUR installed profiles) ---
+
+  - id: content
+    profile: content   # rename to your content profile id
+    handle: "@content"
+    role: "Content specialist (copy, narrative, calendars, social/long-form packages)"
+    status: active     # set bootstrapping until model + doctrine verified live
+    home: "~/.hermes/profiles/content"
+    does:
+      - "Content briefs → drafts, outlines, calendars, hooks, scripts"
+      - "Apply its own content structure/skills"
+      - "Return artifacts + assumptions for Donna to file into vault/kanban"
+    does_not:
+      - "Own program prioritization (Donna/user)"
+      - "Ship engineering"
+    how_donna_prepares_handoff:
+      - "Read content SOUL.md + content skills under its skills/"
+      - "Brief must include: audience, channel, goal, tone, constraints, source facts, deliverable format, success check"
+      - "Prefer kanban card assignee=<content-profile> with full body"
+    doctrine_paths:
+      - "~/.hermes/profiles/content/SOUL.md"
+      - "~/.hermes/profiles/content/AGENTS.md"
+    skills_hint:
+      - "media/youtube-content"
+      - "creative/* when present"
+    blockers: []
+
+  - id: build
+    profile: ptah      # example: any engineering/build foreman profile
+    handle: "@build"
+    role: "Build / engineering specialist (code ships via gated pipeline)"
+    status: active
+    home: "~/.hermes/profiles/ptah"
+    does:
+      - "Product idea → plan → implement → verify → ship report"
+      - "TDD, worktrees, review gates as defined by its own doctrine"
+    does_not:
+      - "Content/marketing craft"
+      - "Replace Donna's program inventory"
+    how_donna_prepares_handoff:
+      - "Read build SOUL.md + AGENTS.md + pipeline skill before briefing"
+      - "Brief: goal, constraints, repo path(s), acceptance evidence, secrets policy"
+      - "Prefer kanban assignee=<build-profile> with workspace worktree|dir:<path>"
+      - "Never trust self-report alone — verify artifacts/paths before closing parent program tasks"
+    doctrine_paths:
+      - "~/.hermes/profiles/ptah/SOUL.md"
+      - "~/.hermes/profiles/ptah/AGENTS.md"
+    skills_core:
+      - "(whatever that profile documents)"
+
+## Not on roster yet
+
+# Add design / web / video / other profiles only after the user expands this file.
+
+## Long-running project rules
+
+projects:
+  shape: "multi_month_beta"
+  rules:
+    - "A project is a stream, not a ticket. Tickets are slices; the project stays open."
+    - "Every project note: objective, owner (human or bot), status (operativo|beta|bloqueado|pausado), horizon (sin fecha fija | mes | trimestre), open work, last check-in."
+    - "Kanban cards are work units under a project/tenant; closing a card ≠ closing the project."
+    - "hermes project create … can bind folders + kanban board for deterministic worktrees."
+    - "No pressure to 'finish this week' unless the user sets a real external deadline."
+  inventory_home: "${OBSIDIAN_VAULT_PATH}/Projects"
+  kanban_board: "donna-ops"
+
+## Dispatch checklist (Donna)
+
+before_any_specialist_work:
+  - "Inventory exists and the slice is listed with owner"
+  - "Read .team member block for assignee"
+  - "Read assignee doctrine_paths (at least SOUL head + pipeline if applicable)"
+  - "Choose channel: kanban (default for real work) | Bot Chat DM | CLI one-shot"
+  - "Write brief in assignee language; attach paths/acceptance"
+  - "Dispatch; record card id / session in vault project note"
+  - "Follow: running → review → blocked → done; verify artifacts"
+  - "Update inventory status; never mark program done because one card closed"
+
+## Maintenance
+
+maintain:
+  - "When the user adds a bot: append member block here first, then profile describe + hermes-bots title"
+  - "When a bot's skills/SOUL change materially: bump updated date and refresh how_donna_prepares_handoff"
+  - "Flip readiness to active only after model + specialist SOUL verified live"
