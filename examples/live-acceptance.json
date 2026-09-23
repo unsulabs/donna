@@ -1,0 +1,121 @@
+{
+  "release": "2.0.0-rc.1",
+  "environment": {
+    "hermes_version": null,
+    "profile": null,
+    "model": null,
+    "channel": null,
+    "dispatcher_host": null
+  },
+  "tests": [
+    {
+      "id": "L01",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L02",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L03",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L04",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L05",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L06",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L07",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L08",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L09",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L10",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L11",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L12",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L13",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L14",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L15",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L16",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L17",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    },
+    {
+      "id": "L18",
+      "status": "NOT_RUN",
+      "evidence": [],
+      "notes": ""
+    }
+  ],
+  "release_decision": "NOT_APPROVED"
+}

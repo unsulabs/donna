@@ -1,91 +1,101 @@
 ---
 name: donna-team-orchestration
-description: Use when intake, multi-bot handoff, kanban assign, or long-running project tracking for Donna's team.
-version: 1.1.0
+description: Prepare full specialist briefs, dispatch durable Hermes work and own review, correction, integration and closure.
+version: 2.0.0-rc.1
 author: Unsu Labs
 license: MIT
 metadata:
   hermes:
-    tags: [donna, orchestration, kanban, bots, team, ea]
+    tags: [donna, orchestration, personal-assistant]
 ---
 
-# Donna team orchestration
+# Orquestación y responsabilidad por resultados
 
-Load **before** assigning work to another profile or answering program-status questions that involve specialists.
+Carga `donna-session`; consulta el proyecto, el roster privado v2 y el estado real.
+La delegación es central. No significa abandonar el encargo ni negarte a investigar.
 
-## Source of truth
+## Preparar
 
-1. `$HERMES_HOME/.team` — roster, channels, dispatch checklist  
-   (copy from distribution `.team.example` if missing)
-2. `$HERMES_HOME/AGENTS.md` — hard rails  
-3. Vault projects: `$OBSIDIAN_VAULT_PATH/Projects` (when set)  
-4. Kanban board: `donna-ops` (or the board named in `.team`)
+Antes de encargar, verifica propósito, fuentes, entregable, criterios, dependencias
+y aprobación. Lee la doctrina del destinatario y adapta el encargo a lo que necesita
+para tener éxito. Investiga tú lo necesario para que la tarea sea ejecutable.
 
-## Time 1 — Intake (always)
+Solo usa perfiles configurados, con capacidades y skills comprobadas, evidencias
+recientes de modelo/herramientas/entrega, y existencia nativa actual. Si falta una
+capacidad, registra `gap` y carga `donna-team-development`; no inventes agentes.
 
-From a dump or new initiative:
-
-1. Split into tasks: what | owner | status | horizon | blocker  
-2. Owner ∈ {user, human, member from `.team`}  
-3. Horizons: `continuous` | `month` | `quarter` | `no fixed date` — **no fake deadlines**  
-4. Write/update vault project note + optional kanban cards in **triage/todo**  
-5. Do **not** open with “I can write the site/copy for you”
-
-## Time 2 — Execute / handoff
-
-When the user says to work a stream:
-
-1. `read_file` `.team` member block  
-2. Read assignee `doctrine_paths` (minimum SOUL + pipeline skill head if any)  
-3. If `.team` marks **bootstrapping** / blockers → report blocker; do not pretend dispatch succeeded  
-4. Channel pick:  
-   - **kanban** (default durable): `kanban_create` title + body brief + `assignee`  
-   - Bot Chat / Desktop: `message_agent` only if this session is Bot Chat  
-   - CLI: `hermes -p <name> chat -q '…'` for one-shot  
-5. Record card id / command evidence in the vault project note  
-6. Follow until card done/blocked; verify files/URLs; update inventory  
-7. Closing a card ≠ closing a multi-month project
-
-## Brief templates
-
-### → content specialist
-
-- Audience, channel, goal, tone, constraints  
-- Source facts (links/paths) — no invented claims  
-- Deliverable format + length  
-- Success check (what Donna will verify)
-
-### → build / engineering specialist
-
-- Goal + non-goals  
-- Repo / path (`dir:` or worktree)  
-- Acceptance evidence (commands/tests)  
-- Lane hint only if objective criteria known  
-- Secrets: never paste; point to `.env` policy  
-- After run: verify paths; distrust self-report alone
-
-## Kanban quick CLI
+Para cambiar un roster, modifica su JSON privado con el procedimiento local de
+edición seguro e impórtalo completo; los miembros omitidos quedan deshabilitados:
 
 ```bash
-hermes kanban --board donna-ops list
-hermes kanban --board donna-ops create "Title" --assignee <profile> --body "…" --tenant <project-slug>
-hermes kanban --board donna-ops show <id>
-hermes kanban --board donna-ops comment <id> --body "…"
+python3 "$HERMES_HOME/scripts/donna_ops.py" team-import "$HERMES_HOME/.team"
+python3 "$HERMES_HOME/scripts/donna_ops.py" prepare tarea-id
 ```
 
-Prefer tools `kanban_*` when enabled in this session.
+`prepare` persiste un intento pero no lo envía. Revisa el brief generado. Fuentes
+privadas: envía solo lo necesario. Un directorio `workspace` debe estar dentro de
+`workspace_roots` aprobados. Sin directorio específico se crea un espacio persistente
+por intento bajo el estado de Donna, no scratch efímero.
 
-Optional board-wide terminal-event notify (no LLM):
+## Despachar
 
 ```bash
-# Set DONNA_KANBAN_BOARD_DB to the board sqlite path, then:
-python3 scripts/kanban_board_notify.py
+python3 "$HERMES_HOME/scripts/donna_ops.py" dispatch tarea-id
+# O un lote acotado, sin enviar tareas humanas ni las de Donna:
+python3 "$HERMES_HOME/scripts/donna_ops.py" dispatch-ready
 ```
 
-## Anti-patterns
+El toolkit genera `idempotency-key` por instancia+tarea+intento, con payload
+inmutable. Si se pierde la respuesta, repite la MISMA tarea después del backoff.
+No inventes otro ID para eludir la deduplicación. Al agotar transporte, inspecciona
+la clave en el tablero; `transport-reset --reason` conserva esa misma clave.
 
-- Pitching Donna capabilities instead of inventory  
-- Assigning profiles not listed in `.team`  
-- Using only `delegate_task` for multi-day specialist work  
-- Marking a program “done” because one card closed  
-- Wiping tasks when the user rejects a framing
+Crear tarjeta no acredita worker en ejecución. Comprueba dispatcher, assignee y
+fase usando herramientas nativas. Las tarjetas creadas por CLI necesitan una
+suscripción nativa explícita o reconciliación programada. Ver docs/AUTOMATION.md.
+
+## Revisar y corregir
+
+```bash
+python3 "$HERMES_HOME/scripts/donna_ops.py" sync
+python3 "$HERMES_HOME/scripts/donna_ops.py" show task tarea-id
+```
+
+`done` nativo se convierte en `awaiting_review`. Abre artefactos, contrasta todas las
+condiciones y registra observaciones independientes. Usa un revisor especializado
+cuando no puedas evaluar calidad con suficiente fundamento.
+
+```bash
+python3 "$HERMES_HOME/scripts/donna_ops.py" accept-task tarea-id --evidence /ruta/privada/evidencia.json
+```
+
+La evidencia cubre exactamente los IDs de criterio y referencias inspeccionables.
+Un hash de archivo opcional comprueba integridad; no reemplaza el juicio de calidad.
+Una decisión humana necesita su recibo real. No inventes un recibo de autorización.
+
+Para entrega DONE defectuosa:
+
+```bash
+python3 "$HERMES_HOME/scripts/donna_ops.py" rework tarea-id --reason 'Defecto observado, criterio incumplido y corrección concreta'
+python3 "$HERMES_HOME/scripts/donna_ops.py" dispatch tarea-id
+```
+
+Se crea un nuevo intento acotado y se conserva la tarjeta previa. Las aprobaciones
+sensibles no se reutilizan automáticamente. Si la tarjeta nativa está en `review`,
+`blocked` o `running`, usa su flujo nativo antes: no fuerces DONE para entrar aquí.
+No repitas un unblock sin resolver su causa. No cambies el motor nativo de revisión
+de otros proyectos o perfiles.
+
+## Integrar y cerrar
+
+Después de aceptar, comprueba dependencias y realiza el siguiente paso autorizado.
+Una tarjeta aceptada no cierra el proyecto. Haz `render`, prepara solo las decisiones
+humanas necesarias, y verifica la utilidad conjunta y aceptación requerida:
+
+```bash
+python3 "$HERMES_HOME/scripts/donna_ops.py" close-project proyecto-id --evidence /ruta/privada/aceptacion.json
+```
+
+Las responsabilidades/rutinas no se cierran como proyectos finitos. Resultados
+reabiertos o modificados requieren revisión de dependientes; no falsifiques su
+vigencia. Documenta bloqueos, siguiente revisión y quién puede resolverlos.

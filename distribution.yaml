@@ -1,40 +1,26 @@
 name: donna
-version: 1.1.0
+version: 2.0.0-rc.1
 description: >
-  Executive-assistant Hermes profile (Donna): perceptive EA and multi-bot
-  orchestrator. Ships persona + intake/handoff doctrine, .team roster template,
-  full-stack guided onboarding (Mnemosyne memory, PARA Obsidian vault, optional
-  donna-ops kanban, daily briefing, TTS, optional Google/Telegram), and a clean
-  vault starter. No credentials, model pins, or personal data — runs on the
-  recipient's own Hermes model/provider.
+  Whole-life executive assistant and specialist orchestrator. Includes explicit
+  planning and acceptance procedures, a bounded coordination toolkit, a
+  conflict-aware Obsidian projection, and native Hermes Kanban/cron integration.
+  Release candidate: offline tests are distinct from live installation acceptance.
 hermes_requires: ">=0.14.0"
 author: Unsu Labs
 license: MIT
 homepage: https://github.com/unsulabs/donna
-# Env vars listed for install-time checklist. None are required to install;
-# model auth is via hermes setup / existing profile keys.
 env_vars:
+  - name: DONNA_OPS_CONFIG
+    description: Absolute path to private donna-ops.json; defaults to HERMES_HOME/donna-ops.json
+    required: false
   - name: OBSIDIAN_VAULT_PATH
-    description: Absolute path to this profile's Obsidian vault (set by onboarding)
+    description: Existing approved vault path, also used by bundled Obsidian skills
     required: false
   - name: MNEMOSYNE_DATA_DIR
-    description: Absolute path to profile-scoped Mnemosyne SQLite data dir
+    description: Optional existing profile-scoped memory provider data
     required: false
-  - name: MNEMOSYNE_HOST_LLM_ENABLED
-    description: Use Hermes host LLM for Mnemosyne consolidation (recommended true)
-    required: false
-    default: "true"
   - name: TELEGRAM_BOT_TOKEN
-    description: Telegram bot token (optional messaging)
-    required: false
-  - name: TELEGRAM_ALLOWED_USERS
-    description: Comma-separated Telegram user IDs allowed to talk to the bot
-    required: false
-  - name: DONNA_KANBAN_BOARD_DB
-    description: Absolute path to donna-ops (or chosen board) kanban.db for optional board notify script
-    required: false
-  - name: DONNA_KANBAN_BOARD
-    description: Kanban board slug for notify script (default donna-ops)
+    description: Optional account credential; configure privately, never in this repository
     required: false
 distribution_owned:
   - SOUL.md
@@ -45,9 +31,24 @@ distribution_owned:
   - distribution.yaml
   - profile.yaml
   - .team.example
-  - skills/
-  - scripts/
+  - .env.example
+  - skills/donna-session/
+  - skills/donna-planning/
+  - skills/donna-team-orchestration/
+  - skills/donna-operational-review/
+  - skills/donna-team-development/
+  - skills/donna-setup/
+  - scripts/donna_migrate_team.py
+  - scripts/donna_ops.py
+  - scripts/donna_review_gate.py
+  - scripts/donna_runtime/
+  - scripts/kanban_board_notify.py
+  - scripts/scaffold_vault.py
+  - scripts/config_guard.py
+  - docs/
+  - examples/
   - assets/
   - skins/
-  - memories/
-  - .env.example
+# Runtime .team, donna-ops.json, donna-state and memories are NEVER distribution-owned.
+# The version floor is inherited; doctor --native + live acceptance, not the number
+# alone, determine compatibility with required public CLI contracts.

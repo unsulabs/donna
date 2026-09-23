@@ -1,22 +1,33 @@
 # Changelog
 
-## 1.1.0 — 2026-09-22
+## 2.0.0-rc.1 · 2026-09-22
 
-- **Orchestrator rails:** EA intake-first doctrine, long-running projects, bots = profiles (aligned with production Donna behavior; public/generic wording)
-- **`.team.example`:** authoritative multi-bot roster template (copy to live `.team`; no secrets/paths of a specific operator)
-- **Skill `donna-team-orchestration`:** Time 1 intake / Time 2 handoff, brief templates, kanban CLI, anti-patterns
-- **`scripts/kanban_board_notify.py`:** optional board-wide terminal-event notify via env (`DONNA_KANBAN_BOARD_DB`, …)
-- **`donna-setup`:** optional team roster + `donna-ops` board + board notify steps
-- **`profile.yaml`:** Bot Mode `ui_meta.hermes-bots` title; orchestrator description
-- **`config.yaml`:** kanban toolset on telegram surface; dispatcher comments; still no model pins
-- **README / MEMORY / USER templates:** orchestration status language and stack fields
-- **distribution.yaml:** v1.1.0; own `.team.example` + new skill/script
+Candidate based on `ef15483af9765c32e7f86e2091a7709bbd387bb9` (1.1.0).
 
-## 1.0.0
+- Whole-life mission, six operational skills and explicit per-session bootstrap.
+- Stdlib coordination journal: planning, roles, dependencies, human capacity,
+  attested readiness, approvals, idempotent durable dispatch and bounded recovery.
+- Native delivery is separate from semantic acceptance; remediation preserves
+  card history, invalidates downstream acceptance and has a finite budget.
+- Existing-vault Markdown/Kanban projection with stable IDs, editable project
+  fields, conflict preservation, backups and explicit resolution.
+- Bounded native cron preflight with review leases, reconciliation and post-work
+  acknowledgement. Native scheduler/dispatcher retained; no second daemon.
+- Explicit staged migration, offline tests, subprocess contract fixtures,
+  acceptance scenarios and implementation handoff.
+- BREAKING: `.team` v2 is strict JSON, not v1 freeform YAML. Do not overwrite the
+  live roster. Migrate deliberately and reverify readiness.
+- BREAKING: legacy board notifier exits with a migration notice; pause its old
+  no_agent cron before update and install the skill-backed review in staging.
+- Fresh defaults remove broad script-execution approval bypasses. Live config,
+  providers, secrets and existing tool policies must be merged, not overwritten.
+- No claim that offline tests validate live Hermes, models, accounts or Obsidian UI.
 
-- Initial public distribution for `hermes profile install github.com/unsulabs/donna`
-- Donna persona (`SOUL.md`) + operating doctrine (`AGENTS.md`)
-- Full-stack onboarding skill `donna-setup` (Mnemosyne, PARA vault, briefing, TTS, optional integrations)
-- `assets/vault-starter` + `scripts/scaffold_vault.py`
-- Optional `scripts/config_guard.py` (no hardcoded provider/model)
-- Clean `config.yaml` defaults without credentials or model pins
+## 1.1.0 · 2026-09-22
+
+Baseline introduced orchestrator doctrine, `.team.example`, team-orchestration
+skill and optional board notification. Original history remains in Git.
+
+## 1.0.0 · 2026-09-18
+
+Initial public profile distribution with persona, setup and vault starter.
