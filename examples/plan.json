@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "project": {
+    "id": "proyecto-demo",
+    "title": "Organizar un proyecto de vida de ejemplo",
+    "kind": "project",
+    "outcome": "Un plan y entregable utilizables, validados por la persona",
+    "criteria": [
+      {
+        "id": "utilidad",
+        "description": "La persona puede usar el resultado acordado"
+      }
+    ],
+    "priority": 3,
+    "next_review": "2026-09-23T09:00:00-06:00",
+    "allocation_hours_week": 3,
+    "assumptions": [
+      "Datos sintéticos: sustituir por alcance y disponibilidad reales"
+    ],
+    "context_refs": [
+      "ejemplo:brief-no-es-evidencia-real"
+    ],
+    "acceptance_owner": "user"
+  },
+  "tasks": [
+    {
+      "id": "demo-investigar",
+      "title": "demo-investigar",
+      "owner": {
+        "kind": "donna",
+        "id": "donna"
+      },
+      "outcome": "Resultado de ejemplo que debe concretarse",
+      "brief": "Trabajar solo con el alcance y fuentes aprobadas; este ejemplo no autoriza acciones reales.",
+      "criteria": [
+        {
+          "id": "completo",
+          "description": "Se cumplen los requisitos acordados y comprobados"
+        }
+      ],
+      "dependencies": [],
+      "capabilities": [],
+      "skills": [],
+      "duration_days": {
+        "low": 0.5,
+        "high": 1
+      },
+      "human_hours": {
+        "low": 0.25,
+        "high": 0.5
+      },
+      "action_class": "internal",
+      "source_refs": [
+        "ejemplo:fuente-sintetica"
+      ]
+    },
+    {
+      "id": "demo-decidir",
+      "title": "demo-decidir",
+      "owner": {
+        "kind": "user",
+        "id": "usuario"
+      },
+      "outcome": "Resultado de ejemplo que debe concretarse",
+      "brief": "Trabajar solo con el alcance y fuentes aprobadas; este ejemplo no autoriza acciones reales.",
+      "criteria": [
+        {
+          "id": "completo",
+          "description": "Se cumplen los requisitos acordados y comprobados"
+        }
+      ],
+      "dependencies": [
+        "demo-investigar"
+      ],
+      "capabilities": [],
+      "skills": [],
+      "duration_days": {
+        "low": 0.5,
+        "high": 1
+      },
+      "human_hours": {
+        "low": 0.25,
+        "high": 0.5
+      },
+      "action_class": "internal",
+      "source_refs": [
+        "ejemplo:fuente-sintetica"
+      ]
+    },
+    {
+      "id": "demo-construir",
+      "title": "demo-construir",
+      "owner": {
+        "kind": "agent",
+        "id": "constructor"
+      },
+      "outcome": "Resultado de ejemplo que debe concretarse",
+      "brief": "Trabajar solo con el alcance y fuentes aprobadas; este ejemplo no autoriza acciones reales.",
+      "criteria": [
+        {
+          "id": "completo",
+          "description": "Se cumplen los requisitos acordados y comprobados"
+        }
+      ],
+      "dependencies": [
+        "demo-decidir"
+      ],
+      "capabilities": [
+        "build"
+      ],
+      "skills": [],
+      "duration_days": {
+        "low": 0.5,
+        "high": 1
+      },
+      "human_hours": {
+        "low": 0.25,
+        "high": 0.5
+      },
+      "action_class": "internal",
+      "source_refs": [
+        "ejemplo:fuente-sintetica"
+      ]
+    },
+    {
+      "id": "demo-integrar",
+      "title": "demo-integrar",
+      "owner": {
+        "kind": "donna",
+        "id": "donna"
+      },
+      "outcome": "Resultado de ejemplo que debe concretarse",
+      "brief": "Trabajar solo con el alcance y fuentes aprobadas; este ejemplo no autoriza acciones reales.",
+      "criteria": [
+        {
+          "id": "completo",
+          "description": "Se cumplen los requisitos acordados y comprobados"
+        }
+      ],
+      "dependencies": [
+        "demo-construir"
+      ],
+      "capabilities": [],
+      "skills": [],
+      "duration_days": {
+        "low": 0.5,
+        "high": 1
+      },
+      "human_hours": {
+        "low": 0.25,
+        "high": 0.5
+      },
+      "action_class": "internal",
+      "source_refs": [
+        "ejemplo:fuente-sintetica"
+      ]
+    }
+  ]
+}

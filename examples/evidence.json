@@ -1,0 +1,13 @@
+{
+  "reviewer": "REVISOR_REAL",
+  "source": "REFERENCIA_A_VERIFICACION_REAL",
+  "summary": "Sustituir por lo observado; este archivo no es evidencia de producción",
+  "checks": [
+    {
+      "criterion": "completo",
+      "passed": true,
+      "source": "FUENTE_REAL",
+      "observation": "OBSERVACION_REAL_POR_DOCUMENTAR"
+    }
+  ]
+}

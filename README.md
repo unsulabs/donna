@@ -1,151 +1,95 @@
-# Donna — Hermes executive-assistant profile
+# Donna · asistente personal ejecutiva y orquestadora
 
-![Donna](assets/donna.png)
+**Versión propuesta: 2.0.0-rc.1.** Implementación sobre la distribución 1.1.0,
+commit base `ef15483af9765c32e7f86e2091a7709bbd387bb9`.
 
-**Donna** is an open [Hermes Agent](https://hermes-agent.nousresearch.com/docs) **profile distribution**: persona, operating doctrine, multi-bot orchestration, full-stack onboarding, and a PARA Obsidian vault starter — packaged the same way as [ptah](https://github.com/Salt-555/ptah).
+Donna ayuda a organizar con la persona sus obligaciones, aspiraciones y proyectos
+de vida. Investiga para encargar bien, distingue trabajo humano de trabajo de
+agentes y conserva la responsabilidad de seguimiento, corrección e integración.
+No pretende ejecutar todo personalmente ni delegar la coordinación al usuario.
 
-Install once, run guided setup, get a stack aligned with a production Donna profile:
+Esta versión añade código operativo y procedimientos al perfil de Hermes:
+planificación, registro persistente, despacho idempotente, revisión independiente,
+proyección en Obsidian y revisión programada con límites. **No sustituye Hermes,
+no instala otro daemon y no reorganiza la bóveda existente.**
 
-| Layer | What you get |
+## Leer primero
+
+| Necesidad | Documento |
 |---|---|
-| **Persona** | Sharp, discreet, outcome-focused EA (`SOUL.md`) — archetype, not TV role-play |
-| **Doctrine** | Autonomy without pestering; verify before “done”; **orchestrator rails** (`AGENTS.md`) |
-| **Team** | `.team.example` roster + skill `donna-team-orchestration` — intake first, specialists execute |
-| **Kanban** | Default board pattern **`donna-ops`**; durable dispatch ≠ short `delegate_task` |
-| **Memory** | Onboarding wires **Mnemosyne** profile-scoped (local SQLite), `auto_sleep: false` until you measure recall |
-| **Notes** | Dedicated **Obsidian** vault: PARA + Daily + Inbox + templates + `.obsidian` |
-| **Rhythm** | Optional daily briefing cron; optional config-drift guard; optional board notify |
-| **Voice** | Edge TTS (no API key); voice chosen in onboarding |
-| **Integrations** | Optional Telegram / Google Workspace — your keys, your OAuth |
+| Qué hace cada pieza y quién conserva la verdad | [Arquitectura](docs/ARCHITECTURE.md) |
+| Pasar de Donna 1.1 a esta versión sin perder datos | [Migración](docs/MIGRATION.md) |
+| Comandos y contratos JSON | [CLI](docs/CLI.md), [datos](docs/DATA_CONTRACT.md) |
+| Encargos durables y revisión proactiva | [Automatización](docs/AUTOMATION.md) |
+| Ediciones en Obsidian | [Proyección y conflictos](docs/OBSIDIAN.md) |
+| Pruebas offline y aceptación real | [Aceptación](docs/ACCEPTANCE.md), [testing](docs/TESTING.md) |
+| Límites, privacidad y autorizaciones | [Seguridad](docs/SECURITY.md) |
+| Fuentes técnicas y decisiones | [Fuentes](docs/SOURCES.md) |
 
-**No credentials, sessions, personal memory, or model pins ship in this repo.**
+## Estado de entrega
 
-## Requirements
+El código determinista tiene pruebas unitarias, de recuperación, de archivos y de
+procesos separados con un **doble explícito de la CLI de Hermes**. Ese doble no es
+Hermes, no llama modelos y no comprueba cuentas. El informe adjunto a la entrega
+registra la ejecución efectivamente realizada. No se presenta una simulación como
+prueba de funcionamiento en producción.
 
-- [Hermes Agent](https://hermes-agent.nousresearch.com/docs) `>= 0.14.0`
-- A model provider already working (`hermes setup` / `hermes model`) or keys you add yourself
-- Optional: other Hermes profiles to orchestrate (content, build, design, …)
-- Optional: Obsidian app (Flatpak/desktop/native) for the vault UI
-- Optional: Mnemosyne plugin packages per current Hermes memory docs
+La publicación como estable requiere probar el Hermes instalado, el modelo, el
+canal habitual, la topología de gateway/dispatcher y la interfaz de Obsidian en un
+staging autorizado. El estado `rc` comunica esa separación, no falta de archivos.
 
-## Install
+## Instalar y configurar
+
+Para una instalación nueva, el mecanismo nativo continúa siendo:
 
 ```bash
 hermes profile install github.com/unsulabs/donna --alias
 ```
 
-`--alias` gives you a `donna` command. Without it: `hermes -p donna …`.
+No ejecutar esa instrucción esperando esta versión hasta que se integre/publicite
+la rama adecuada. Para probar el checkout revisado usa el instalador de distribución
+con ruta local y un nombre de perfil de staging, verificando la ayuda instalada.
+**Una instancia existente debe seguir MIGRATION.md; no usar force-config ni borrar
+el perfil como atajo.** Modelos, credenciales, memoria y cuentas son del usuario.
 
-Then:
-
-```bash
-donna model          # or: hermes -p donna setup
-donna chat           # first message: accept full setup when offered
-```
-
-Update later (keeps your `.env`, memories, sessions):
+Desde una instancia configurada:
 
 ```bash
-hermes profile update donna
+python3 "$HERMES_HOME/scripts/donna_ops.py" --help
+python3 "$HERMES_HOME/scripts/donna_ops.py" doctor
+python3 "$HERMES_HOME/scripts/donna_ops.py" doctor --native
 ```
 
-### Local dev install
+`init` requiere la bóveda que YA existe, una subcarpeta autorizada, perfil, tablero,
+zona y capacidad declarada. Sin `--apply` solo presenta la configuración propuesta.
+No crea cron, no conecta cuentas ni toca `.obsidian`.
+
+## Desarrollo y pruebas
 
 ```bash
-hermes profile install /path/to/this/checkout --name donna --alias
+python3 -m unittest discover -s tests -v
+python3 -m compileall -q scripts tests
 ```
 
-## First-run orientation (`donna-setup`)
+Runtime principal: biblioteca estándar de Python 3.10+. El migrador opcional de
+`.team` YAML necesita PyYAML en el intérprete usado; no lo instala. Los tests
+principales no requieren Hermes, modelos, credenciales ni red. La CI define
+comprobaciones en Python 3.10–3.13; una matriz declarada no es una matriz ya ejecutada.
 
-On first chat, Donna offers setup. Say **yes** / **set me up** / **full setup**.
+## Diferencias que importan
 
-The **`donna-setup`** skill walks:
+Una tarjeta `done` es una entrega nativa. Donna exige evidencia antes de `verified`.
+Un proyecto solo cierra con criterios completos y aceptación humana cuando aplica.
+Un movimiento de tarjeta en Obsidian es una intención a resolver, no un resultado.
+Un aviso perdido no borra el trabajo; la revisión lee el estado persistente.
+Una tarea de Donna se realiza en su sesión; las tareas humanas nunca se despachan.
 
-1. Identity + reply style  
-2. Timezone + weather city + TTS voice  
-3. **Mnemosyne** memory (profile data dir + host LLM)  
-4. **Obsidian vault** scaffold (PARA) + `OBSIDIAN_VAULT_PATH`  
-5. Optional **team roster** (`.team` from `.team.example`) + **`donna-ops`** board  
-6. Optional daily briefing  
-7. Optional Telegram / Google / config guard / board notify  
-8. Toolset peel-back (everything useful starts on; you turn off what you do not want)
+No hay agentes especialistas ficticios de fábrica: `.team.example` empieza vacío.
+Las seis skills determinan cómo planificar, investigar, incorporar capacidades,
+coordinar y dar seguimiento. Los scripts ejecutan las transiciones comprobables.
 
-Nothing account-shaped happens without your approval. Secrets never go in chat — only `.env` and official OAuth/device flows.
+## Licencia
 
-### Vault scaffold (manual)
-
-```bash
-python3 scripts/scaffold_vault.py --vault ~/Documents/Donna-Vault
-# then set OBSIDIAN_VAULT_PATH to that absolute path in the profile .env
-```
-
-`--dry-run` preview; `--force` overwrite starter files only.
-
-### Team roster (manual)
-
-```bash
-cp .team.example ~/.hermes/profiles/donna/.team
-# edit member profile: ids to match YOUR profiles
-hermes kanban boards create donna-ops   # or current CLI equivalent
-```
-
-Load skill **`donna-team-orchestration`** before multi-bot handoffs.
-
-## Operating model (short)
-
-1. **Intake first** — dump → inventory (`what / owner / status / horizon / blocker`).  
-2. **Craft is not default** — content/code/design go to specialists in `.team` unless you ask Donna to do the craft.  
-3. **Long-running is normal** — weeks/months, beta while refining; no fake deadlines.  
-4. **Bots = profiles** — prefer **kanban** for durable work; Bot Mode `message_agent` only inside Bot Chat; CLI for one-shots.  
-5. **Verify artifacts** before closing parent program items; closing a card ≠ closing the program.
-
-## Layout
-
-```text
-donna/
-├── distribution.yaml              # hermes profile install manifest
-├── SOUL.md                        # persona
-├── AGENTS.md                      # operating principles + orchestrator rails
-├── .team.example                  # roster template → copy to live .team
-├── config.yaml                    # safe defaults (no model pin, no secrets)
-├── profile.yaml                   # Bot Mode title + description
-├── .env.example
-├── memories/                      # bootstrap templates only
-├── skills/
-│   ├── donna-setup/               # full-stack onboarding
-│   └── donna-team-orchestration/  # intake + handoff playbook
-├── scripts/
-│   ├── scaffold_vault.py
-│   ├── config_guard.py            # optional drift guard (env/flags, no hard pins)
-│   └── kanban_board_notify.py     # optional board-wide terminal-event notify
-├── assets/vault-starter/          # PARA + .obsidian + templates
-└── skins/donna.yaml
-```
-
-Hermes still seeds its **bundled** skill library (Obsidian, Google Workspace, docs, GitHub, …) on the profile. This distribution adds Donna-specific doctrine + setup + vault + team orchestration.
-
-## What is never included
-
-- `.env`, `auth.json`, OAuth tokens, Google client secrets  
-- Live `cron/jobs.json` with personal prompts  
-- Live `.team` with private paths, chat IDs, or operator model pins  
-- Mnemosyne databases, sessions, logs  
-- Hardcoded provider/model identities of any one operator  
-
-## Trust & safety
-
-- Profile install is scoped to `~/.hermes/profiles/donna/` (or `--name`).  
-- Broad tools (terminal, browser, files, kanban) are part of the default CLI surface — same as a fully configured assistant. Peel back in onboarding.  
-- `approvals.mode: manual` and `approvals.cron_mode: deny` ship on.  
-- `privacy.redact_pii: true`, `security.redact_secrets: true`.  
-- `kanban.dispatch_in_gateway: false` by default (machine dispatcher usually lives on the default profile).
-
-## License
-
-MIT — see [LICENSE](LICENSE).
-
-## Credits
-
-- Runtime: [Nous Research Hermes Agent](https://github.com/NousResearch/hermes-agent)  
-- Distribution pattern: [Salt-555/ptah](https://github.com/Salt-555/ptah)  
-- Earlier Donna starter experiments: community `donna-starter` profiles  
+MIT, bajo la licencia existente de Unsu Labs. Conserva LICENSE y los activos
+originales del repositorio. No publiques `.env`, `.team`, `donna-ops.json`, backups,
+memoria ni el journal operativo del usuario.

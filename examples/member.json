@@ -1,0 +1,13 @@
+{
+  "id": "constructor",
+  "profile": "constructor",
+  "role": "Especialista por configurar y probar",
+  "capabilities": [
+    "build"
+  ],
+  "skills": [],
+  "doctrine_paths": [],
+  "status": "proposed",
+  "verified_at": null,
+  "checks": {}
+}

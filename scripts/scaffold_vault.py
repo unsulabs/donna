@@ -1,95 +1,64 @@
 #!/usr/bin/env python3
-"""Scaffold a Donna PARA Obsidian vault from the distribution starter tree.
+"""Explicit NEW-vault utility; not a migration/repair operation.
 
-Idempotent: never overwrites existing files unless --force.
-Does not touch secrets or personal notes outside the starter set.
-
-Usage:
-  python3 scripts/scaffold_vault.py --vault /absolute/path/to/Vault
-  python3 scripts/scaffold_vault.py --vault ~/Documents/Donna-Vault --force
-  python3 scripts/scaffold_vault.py --vault /path --dry-run
+Default is a dry run. --apply publishes a staged starter into a new destination.
+Existing directories, symlinks and force overwrites are rejected.
 """
-
 from __future__ import annotations
-
 import argparse
+import json
 import os
 import shutil
 import sys
+import tempfile
 from pathlib import Path
+from donna_runtime.common import DonnaError, reject_symlink, pretty
 
 
-def repo_root() -> Path:
-    return Path(__file__).resolve().parent.parent
+def scaffold(vault: Path, starter: Path, *, apply=False):
+    vault=vault.expanduser().absolute(); starter=starter.expanduser().absolute()
+    reject_symlink(vault); reject_symlink(starter)
+    if vault.exists():
+        raise DonnaError('Existing vault must be attached with donna_ops init, never scaffolded')
+    if not vault.parent.is_dir() or not starter.is_dir():
+        raise DonnaError('Parent directory and reviewed starter must exist')
+    files=[]
+    for path in sorted(starter.rglob('*')):
+        reject_symlink(path)
+        if path.is_file(): files.append(path.relative_to(starter).as_posix())
+    if not files: raise DonnaError('Starter is empty')
+    if apply:
+        stage=Path(tempfile.mkdtemp(prefix='.donna-new-vault-',dir=vault.parent))
+        try:
+            for name in files:
+                dest=stage/name; dest.parent.mkdir(parents=True,exist_ok=True)
+                shutil.copyfile(starter/name,dest)
+            # Reserve destination exclusively; do not replace concurrent user content.
+            vault.mkdir(mode=0o700)
+            try:
+                for name in files:
+                    dest=vault/name; dest.parent.mkdir(parents=True,exist_ok=True)
+                    with dest.open('xb') as output: output.write((stage/name).read_bytes())
+            except Exception:
+                # Keep partial files for diagnosis rather than deleting possible user edits.
+                raise DonnaError('New-vault copy interrupted; preserve destination and inspect before retry')
+        finally:
+            shutil.rmtree(stage)
+    return {'applied':apply,'new_vault':str(vault),'files':files}
 
 
-def expand(path: str) -> Path:
-    return Path(os.path.expanduser(path)).resolve()
+def main(argv=None):
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--vault',required=True)
+    p.add_argument('--starter',default=str(Path(__file__).resolve().parent.parent/'assets/vault-starter'))
+    p.add_argument('--apply',action='store_true')
+    p.add_argument('--dry-run',action='store_true',help='Explicit default; incompatible with --apply')
+    args=p.parse_args(argv)
+    try:
+        if args.apply and args.dry_run: raise DonnaError('Choose --apply or --dry-run')
+        print(pretty(scaffold(Path(args.vault),Path(args.starter),apply=args.apply)),end='')
+        return 0
+    except (DonnaError,OSError) as exc:
+        print(json.dumps({'ok':False,'error':str(exc)}),file=sys.stderr);return 2
 
-
-def copy_tree(src: Path, dst: Path, *, force: bool, dry_run: bool) -> tuple[int, int, int]:
-    created = skipped = overwritten = 0
-    if not src.is_dir():
-        raise SystemExit(f"starter vault missing: {src}")
-
-    for root, dirs, files in os.walk(src):
-        rel_root = Path(root).relative_to(src)
-        # skip nothing special beyond walk
-        target_dir = dst / rel_root
-        if not dry_run:
-            target_dir.mkdir(parents=True, exist_ok=True)
-        for name in files:
-            s = Path(root) / name
-            t = target_dir / name
-            if t.exists() and not force:
-                skipped += 1
-                continue
-            if t.exists() and force:
-                overwritten += 1
-            else:
-                created += 1
-            if dry_run:
-                action = "overwrite" if t.exists() else "create"
-                print(f"  {action}: {t}")
-                continue
-            t.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(s, t)
-    return created, skipped, overwritten
-
-
-def main() -> int:
-    p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--vault", required=True, help="Destination vault directory (absolute or ~)")
-    p.add_argument("--starter", default=None, help="Override starter tree path")
-    p.add_argument("--force", action="store_true", help="Overwrite existing files")
-    p.add_argument("--dry-run", action="store_true", help="Print actions only")
-    args = p.parse_args()
-
-    dst = expand(args.vault)
-    src = Path(args.starter).resolve() if args.starter else (repo_root() / "assets" / "vault-starter")
-
-    print(f"starter: {src}")
-    print(f"vault:   {dst}")
-    if args.dry_run:
-        print("mode:    dry-run")
-    if args.force:
-        print("mode:    force overwrite")
-
-    if not args.dry_run:
-        dst.mkdir(parents=True, exist_ok=True)
-
-    created, skipped, overwritten = copy_tree(src, dst, force=args.force, dry_run=args.dry_run)
-    print(f"done: created={created} skipped={skipped} overwritten={overwritten}")
-    if not args.dry_run:
-        # light verify
-        need = ["Home.md", "MOC.md", "Inbox.md", ".obsidian/app.json", "Resources/Templates/Daily note.md"]
-        missing = [n for n in need if not (dst / n).is_file()]
-        if missing:
-            print("verify FAIL missing:", ", ".join(missing), file=sys.stderr)
-            return 1
-        print("verify OK")
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+if __name__=='__main__': raise SystemExit(main())
