@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.0.0-rc.1 · integración y verificación · 2026-09-25
+
+- Merged into `main` as `728aebe90418b8909e1406f878fa0a78bb1156e4` (PR #1 from
+  `feat/donna-2.0.0-rc1` @ `5a0d8630`).
+- Remote CI observed green on 2026-09-23 in three runs — `35825804078` (push),
+  `35825817189` (pull_request), `35826010874` (push, `main`) — across Python
+  3.10, 3.11, 3.12 and 3.13.
+- Fresh install from the public URL verified on 2026-09-25 in a staging profile:
+  `hermes profile install github.com/unsulabs/donna` printed
+  `✓ Installed 'donna-gh-verify' v2.0.0-rc.1`, exit 0.
+- Deterministic core exercised on that fresh install: `init --apply` (wrote
+  `donna-ops.json`, mode 600; its declared board was then pointed at an existing
+  board, so no byte size is quoted — the size varies with the board), `doctor`
+  (`ok: true`), `doctor --native` (`ok: true`), `plan-import examples/plan.json`,
+  `activate`, `render` (6 projected Markdown files), `review`, `status`.
+- Observed limit: `doctor --native` returns exit 3 / `native.ok: false` when the
+  declared board does not exist. A missing board is a diagnosis, not a defect.
+- NOT claimed as passed: live gates L01–L18 (`docs/ACCEPTANCE.md`) — real channel,
+  model, gateway/dispatcher topology and Obsidian UI on an authorized staging.
+
 ## 2.0.0-rc.1 · 2026-09-22
 
 Candidate based on `ef15483af9765c32e7f86e2091a7709bbd387bb9` (1.1.0).

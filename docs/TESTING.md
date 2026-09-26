@@ -21,9 +21,9 @@ python3 -m coverage report -m
 ```
 
 Una cobertura alta no garantiza ausencia de bugs ni corrección semántica del agente.
-Los resultados ejecutados en el entorno de entrega están en reports/ dentro del
-paquete. La CI de GitHub es configuración preparada; solo será ejecución real
-cuando el workflow corra sobre la rama y muestre sus resultados.
+La CI de GitHub ya ejecutó esta suite: el 2026-09-23 corrió en verde sobre la rama de
+integración, sobre el pull request y sobre `main` después de la fusión, en Python
+3.10, 3.11, 3.12 y 3.13 (ejecuciones 35825804078, 35825817189, 35826010874).
 
 ## Familias comprobadas
 
