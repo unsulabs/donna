@@ -27,8 +27,11 @@ La auditoría anterior proporcionada por el usuario se tradujo a código y prueb
 La documentación pública gana sobre ejemplos comunitarios cuando hay discrepancias.
 La ayuda/schema efectivos de la instalación se verifican antes de activarla.
 
-El contenedor de desarrollo no pudo obtener una clonación completa de GitHub ni
-instalar Hermes por red. Por ello la entrega es un overlay con preimages del árbol
-público, no un clone completo, y sus tests nativos son doubles explícitos. El intento
-de recuperar el módulo kanban.py mediante el scraper devolvió rate limiting; no se
-infiere su contenido ni se afirma auditoría del core de Hermes.
+En el momento del corte (22 de septiembre de 2026) el contenedor de desarrollo no pudo
+obtener una clonación completa de GitHub ni instalar Hermes por red: la entrega de ese
+corte fue un overlay con preimages del árbol público, no un clone completo, y sus tests
+nativos son doubles explícitos. Eso describe cómo se empaquetó el candidato, no el
+estado del repositorio después de la fusión: hoy `main` es un clon completo con
+historial y la CI remota corrió. El intento de recuperar el módulo kanban.py mediante
+el scraper devolvió rate limiting; no se infiere su contenido ni se afirma auditoría
+del core de Hermes.

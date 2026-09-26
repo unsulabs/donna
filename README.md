@@ -1,7 +1,10 @@
 # Donna · asistente personal ejecutiva y orquestadora
 
-**Versión propuesta: 2.0.0-rc.1.** Implementación sobre la distribución 1.1.0,
-commit base `ef15483af9765c32e7f86e2091a7709bbd387bb9`.
+**Versión 2.0.0-rc.1.** Implementación sobre la distribución 1.1.0, commit base
+`ef15483af9765c32e7f86e2091a7709bbd387bb9`. Integrada en `main` como el commit de
+fusión `728aebe90418b8909e1406f878fa0a78bb1156e4` (PR #1). El estado `rc` sigue
+vigente para los escenarios live L01–L18 de [Aceptación](docs/ACCEPTANCE.md); no es
+un pendiente de integración.
 
 Donna ayuda a organizar con la persona sus obligaciones, aspiraciones y proyectos
 de vida. Investiga para encargar bien, distingue trabajo humano de trabajo de
@@ -46,9 +49,20 @@ Para una instalación nueva, el mecanismo nativo continúa siendo:
 hermes profile install github.com/unsulabs/donna --alias
 ```
 
-No ejecutar esa instrucción esperando esta versión hasta que se integre/publicite
-la rama adecuada. Para probar el checkout revisado usa el instalador de distribución
-con ruta local y un nombre de perfil de staging, verificando la ayuda instalada.
+La instalación desde esa URL pública se verificó el 2026-09-25 sobre un perfil de
+staging: el instalador reportó la versión `2.0.0-rc.1` y el perfil instalado ejecutó
+`init --apply`, `doctor`, `doctor --native`, `plan-import`, `activate`, `render`,
+`review` y `status`. Esa verificación cubre el núcleo determinista; **no** acredita
+los escenarios live L01–L18.
+
+Para probar un checkout local en revisión, instálalo como perfil de staging con un
+nombre propio y verifica la ayuda instalada antes de usarlo.
+
+`init` no comprueba que el tablero declarado exista. Para que `doctor --native` y el
+despacho funcionen, el tablero debe existir ya (`hermes kanban boards create …`).
+`doctor --native` falla en cerrado (salida 3, `native.ok: false`) si el tablero o
+algún contrato de la CLI nativa no está disponible: es un diagnóstico, no una avería.
+
 **Una instancia existente debe seguir MIGRATION.md; no usar force-config ni borrar
 el perfil como atajo.** Modelos, credenciales, memoria y cuentas son del usuario.
 
@@ -73,8 +87,9 @@ python3 -m compileall -q scripts tests
 
 Runtime principal: biblioteca estándar de Python 3.10+. El migrador opcional de
 `.team` YAML necesita PyYAML en el intérprete usado; no lo instala. Los tests
-principales no requieren Hermes, modelos, credenciales ni red. La CI define
-comprobaciones en Python 3.10–3.13; una matriz declarada no es una matriz ya ejecutada.
+principales no requieren Hermes, modelos, credenciales ni red. La CI las ejecuta en
+Python 3.10, 3.11, 3.12 y 3.13; las tres ejecuciones del 2026-09-23 terminaron en
+verde (rama, pull request y `main` tras la fusión).
 
 ## Diferencias que importan
 
